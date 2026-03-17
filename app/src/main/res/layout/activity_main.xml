@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_background"
+    tools:context=".MainActivity">
+
+    <!-- WebView Container with SwipeRefreshLayout -->
+    <FrameLayout
+        android:id="@+id/webViewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.webkit.WebView
+                android:id="@+id/webView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/dark_background" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </FrameLayout>
+
+    <!-- Offline Page -->
+    <LinearLayout
+        android:id="@+id/offlineLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/dark_background"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <!-- Offline icon (Wi-Fi off) -->
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="24dp"
+            android:contentDescription="@string/no_internet"
+            android:src="@drawable/ic_wifi_off"
+            android:tint="@color/green_primary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/no_internet"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:gravity="center"
+            android:text="@string/no_internet_message"
+            android:textColor="@color/text_secondary"
+            android:textSize="16sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="@string/retry"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:backgroundTint="@color/green_primary"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+</FrameLayout>

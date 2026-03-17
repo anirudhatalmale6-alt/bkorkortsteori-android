@@ -1,0 +1,31 @@
+// Top-level build file for Bkörkortsteori Android App
+// Project: se.bkorkortsteori.app
+
+buildscript {
+    ext.kotlin_version = '1.9.22'
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // NOTE: You must add google-services.json to app/ directory
+        // Download it from Firebase Console > Project Settings > General > Your apps
+        // Then uncomment the line below:
+        // classpath 'com.google.gms:google-services:4.4.0'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

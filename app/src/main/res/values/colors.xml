@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand Colors -->
+    <color name="green_primary">#1DB954</color>
+    <color name="green_dark">#17a348</color>
+    <color name="green_light">#4EC975</color>
+
+    <!-- Background Colors -->
+    <color name="dark_background">#0A1628</color>
+    <color name="dark_surface">#111D33</color>
+    <color name="dark_card">#1A2A42</color>
+
+    <!-- Status Bar -->
+    <color name="status_bar">#0A1628</color>
+    <color name="navigation_bar">#0A1628</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0BEC5</color>
+    <color name="text_hint">#78909C</color>
+
+    <!-- Standard Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="white_70">#B3FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Material Design 3 color scheme overrides -->
+    <color name="md_theme_primary">#1DB954</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#17a348</color>
+    <color name="md_theme_onPrimaryContainer">#FFFFFF</color>
+    <color name="md_theme_secondary">#0A1628</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_background">#0A1628</color>
+    <color name="md_theme_onBackground">#FFFFFF</color>
+    <color name="md_theme_surface">#111D33</color>
+    <color name="md_theme_onSurface">#FFFFFF</color>
+</resources>

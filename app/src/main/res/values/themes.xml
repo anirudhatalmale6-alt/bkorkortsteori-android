@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme - Material Design 3 / Dark -->
+    <style name="Theme.Bkorkortsteori" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand colors -->
+        <item name="colorPrimary">@color/green_primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/green_dark</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+
+        <!-- Secondary colors -->
+        <item name="colorSecondary">@color/green_light</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Background & surface -->
+        <item name="android:colorBackground">@color/dark_background</item>
+        <item name="colorSurface">@color/dark_surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@color/status_bar</item>
+        <item name="android:navigationBarColor">@color/navigation_bar</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- No action bar -->
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
+    <!-- Splash Screen Theme -->
+    <style name="Theme.Bkorkortsteori.Splash" parent="Theme.Bkorkortsteori">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:statusBarColor">@color/green_primary</item>
+        <item name="android:navigationBarColor">@color/green_primary</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+</resources>
