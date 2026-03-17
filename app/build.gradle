@@ -1,9 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    // NOTE: Uncomment the line below after adding google-services.json to this directory (app/)
-    // Download google-services.json from: Firebase Console > Project Settings > General > Your apps
-    // id 'com.google.gms.google-services'
+    id 'com.google.gms.google-services'
 }
 
 android {
