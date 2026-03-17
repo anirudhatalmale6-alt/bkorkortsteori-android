@@ -43,6 +43,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.browser.customtabs.CustomTabColorSchemeParams
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.messaging.FirebaseMessaging
 import java.io.File
@@ -75,6 +77,9 @@ class MainActivity : AppCompatActivity() {
 
     // Track if we have loaded the page at least once
     private var hasLoadedPage = false
+
+    // Track if we opened OAuth so we know to refresh on return
+    private var openedOAuth = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -225,9 +230,12 @@ class MainActivity : AppCompatActivity() {
         // Media
         webSettings.mediaPlaybackRequiresUserGesture = false
 
-        // User Agent - append custom identifier
+        // User Agent - remove WebView markers so Google OAuth works
         val defaultUserAgent = webSettings.userAgentString
-        webSettings.userAgentString = "$defaultUserAgent BKorkortsteoriApp/1.0"
+        val chromeAgent = defaultUserAgent
+            .replace("; wv)", ")")
+            .replace(Regex("Version/\\d+\\.\\d+\\s"), "")
+        webSettings.userAgentString = "$chromeAgent BKorkortsteoriApp/1.0"
 
         // Multiple windows support (for target="_blank")
         webSettings.setSupportMultipleWindows(true)
@@ -377,6 +385,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun openInCustomTab(url: String) {
+        try {
+            val colorScheme = CustomTabColorSchemeParams.Builder()
+                .setToolbarColor(Color.parseColor("#0a1628"))
+                .setNavigationBarColor(Color.parseColor("#0a1628"))
+                .build()
+
+            val customTabsIntent = CustomTabsIntent.Builder()
+                .setDefaultColorSchemeParams(colorScheme)
+                .setShowTitle(true)
+                .build()
+
+            customTabsIntent.launchUrl(this, Uri.parse(url))
+        } catch (e: Exception) {
+            // Fallback to external browser if Custom Tabs not available
+            openInExternalBrowser(url)
+        }
+    }
+
     @Throws(IOException::class)
     private fun createImageFile(): File {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
@@ -390,6 +417,12 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         webView.onResume()
         CookieManager.getInstance().flush()
+
+        // After returning from OAuth Custom Tab, reload the page to check login state
+        if (openedOAuth) {
+            openedOAuth = false
+            webView.reload()
+        }
     }
 
     override fun onPause() {
@@ -422,8 +455,12 @@ class MainActivity : AppCompatActivity() {
                 // Internal URLs - load in WebView
                 isInternalUrl(url) -> false
 
-                // OAuth URLs - keep in WebView for login flows
-                isOAuthUrl(url) -> false
+                // OAuth URLs - open in Chrome Custom Tab (Google blocks WebView OAuth)
+                isOAuthUrl(url) -> {
+                    openedOAuth = true
+                    openInCustomTab(url)
+                    true
+                }
 
                 // tel: links
                 url.startsWith("tel:") -> {
