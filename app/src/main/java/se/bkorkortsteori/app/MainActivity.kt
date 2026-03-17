@@ -359,6 +359,15 @@ class MainActivity : AppCompatActivity() {
                 url.startsWith("https://bkorkortsteori.se")
     }
 
+    private fun isOAuthUrl(url: String): Boolean {
+        return url.startsWith("https://accounts.google.com") ||
+                url.startsWith("https://www.facebook.com/login") ||
+                url.startsWith("https://www.facebook.com/v") ||
+                url.startsWith("https://m.facebook.com") ||
+                url.contains("oauth") ||
+                url.contains("accounts.google.com")
+    }
+
     private fun openInExternalBrowser(url: String) {
         try {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -412,6 +421,9 @@ class MainActivity : AppCompatActivity() {
             return when {
                 // Internal URLs - load in WebView
                 isInternalUrl(url) -> false
+
+                // OAuth URLs - keep in WebView for login flows
+                isOAuthUrl(url) -> false
 
                 // tel: links
                 url.startsWith("tel:") -> {
