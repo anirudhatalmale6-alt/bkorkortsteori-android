@@ -78,8 +78,8 @@ class MainActivity : AppCompatActivity() {
     // Track if we have loaded the page at least once
     private var hasLoadedPage = false
 
-    // Track if we opened OAuth so we know to refresh on return
-    private var openedOAuth = false
+    // Track if we have loaded the page at least once (used by offline handler)
+    // openedOAuth no longer needed - deep link handles OAuth return
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,18 +94,19 @@ class MainActivity : AppCompatActivity() {
         requestNotificationPermission()
         subscribeToFCMTopics()
 
-        // Load target URL from notification or default
-        val targetUrl = intent?.getStringExtra(EXTRA_TARGET_URL) ?: BASE_URL
-        loadUrl(targetUrl)
+        // Check for OAuth deep link or notification target URL
+        val deepLinkUrl = handleDeepLink(intent)
+        loadUrl(deepLinkUrl ?: BASE_URL)
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         setIntent(intent)
-        // Handle notification tap while app is already open
-        val targetUrl = intent?.getStringExtra(EXTRA_TARGET_URL)
-        if (!targetUrl.isNullOrEmpty()) {
-            loadUrl(targetUrl)
+
+        // Handle deep link (OAuth callback or notification)
+        val deepLinkUrl = handleDeepLink(intent)
+        if (!deepLinkUrl.isNullOrEmpty()) {
+            loadUrl(deepLinkUrl)
         }
     }
 
@@ -333,6 +334,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Handle deep links from OAuth callback (bkorkortsteori://login?token=XXX)
+     * or notification taps (EXTRA_TARGET_URL)
+     */
+    private fun handleDeepLink(intent: Intent?): String? {
+        if (intent == null) return null
+
+        // Check for custom scheme deep link (OAuth callback)
+        val data = intent.data
+        if (data != null && data.scheme == "bkorkortsteori") {
+            val token = data.getQueryParameter("token")
+            if (!token.isNullOrEmpty()) {
+                Log.d(TAG, "OAuth callback received with token")
+                return "$BASE_URL/api/app-login.php?token=$token"
+            }
+        }
+
+        // Check for notification target URL
+        val targetUrl = intent.getStringExtra(EXTRA_TARGET_URL)
+        if (!targetUrl.isNullOrEmpty()) {
+            return targetUrl
+        }
+
+        return null
+    }
+
     private fun loadUrl(url: String) {
         if (isNetworkAvailable()) {
             showWebView()
@@ -418,11 +445,7 @@ class MainActivity : AppCompatActivity() {
         webView.onResume()
         CookieManager.getInstance().flush()
 
-        // After returning from OAuth Custom Tab, reload the page to check login state
-        if (openedOAuth) {
-            openedOAuth = false
-            webView.reload()
-        }
+        // OAuth return is now handled via deep link (bkorkortsteori://login?token=)
     }
 
     override fun onPause() {
@@ -457,7 +480,6 @@ class MainActivity : AppCompatActivity() {
 
                 // OAuth URLs - open in Chrome Custom Tab (Google blocks WebView OAuth)
                 isOAuthUrl(url) -> {
-                    openedOAuth = true
                     openInCustomTab(url)
                     true
                 }

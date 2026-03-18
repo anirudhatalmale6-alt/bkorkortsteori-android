@@ -74,6 +74,14 @@
                 <action android:name="OPEN_FROM_NOTIFICATION" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
+            <!-- Custom scheme for OAuth callback from Chrome Custom Tab -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="bkorkortsteori" />
+            </intent-filter>
         </activity>
 
         <!-- Firebase Cloud Messaging Service -->
