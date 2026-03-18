@@ -8,18 +8,28 @@ android {
     namespace 'se.bkorkortsteori.app'
     compileSdk 34
 
+    signingConfigs {
+        release {
+            storeFile file('/var/lib/freelancer/projects/40289839/play_store/release-keystore.jks')
+            storePassword 'bkorkortsteori2026'
+            keyAlias 'bkorkortsteori'
+            keyPassword 'bkorkortsteori2026'
+        }
+    }
+
     defaultConfig {
         applicationId "se.bkorkortsteori.app"
         minSdk 24
         targetSdk 34
-        versionCode 5
-        versionName "1.5.0"
+        versionCode 6
+        versionName "1.6.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
