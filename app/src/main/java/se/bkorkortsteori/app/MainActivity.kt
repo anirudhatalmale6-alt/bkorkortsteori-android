@@ -46,6 +46,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+// WebSettingsCompat and WebViewFeature used via reflection for X-Requested-With header
 import com.google.firebase.messaging.FirebaseMessaging
 import java.io.File
 import java.io.IOException
@@ -237,6 +238,20 @@ class MainActivity : AppCompatActivity() {
             .replace("; wv)", ")")
             .replace(Regex("Version/\\d+\\.\\d+\\s"), "")
         webSettings.userAgentString = "$chromeAgent BKorkortsteoriApp/1.0"
+
+        // Disable X-Requested-With header via reflection (Google uses it to detect WebViews)
+        try {
+            val clazz = Class.forName("androidx.webkit.WebSettingsCompat")
+            val featureClazz = Class.forName("androidx.webkit.WebViewFeature")
+            val isSupported = featureClazz.getMethod("isFeatureSupported", String::class.java)
+            if (isSupported.invoke(null, "REQUESTED_WITH_HEADER_MODE") as Boolean) {
+                val setMode = clazz.getMethod("setRequestedWithHeaderMode", WebSettings::class.java, Int::class.java)
+                setMode.invoke(null, webSettings, 2) // 2 = NO_HEADER
+                Log.d(TAG, "X-Requested-With header disabled")
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Could not disable X-Requested-With header: ${e.message}")
+        }
 
         // Multiple windows support (for target="_blank")
         webSettings.setSupportMultipleWindows(true)
@@ -478,11 +493,8 @@ class MainActivity : AppCompatActivity() {
                 // Internal URLs - load in WebView
                 isInternalUrl(url) -> false
 
-                // OAuth URLs - open in Chrome Custom Tab (Google blocks WebView OAuth)
-                isOAuthUrl(url) -> {
-                    openInCustomTab(url)
-                    true
-                }
+                // OAuth URLs - load in WebView (user agent is cleaned to avoid Google block)
+                isOAuthUrl(url) -> false
 
                 // tel: links
                 url.startsWith("tel:") -> {
